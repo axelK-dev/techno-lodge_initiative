@@ -5,18 +5,23 @@ Welcome to **Techno-Lodge**, a youth-driven, community-wide hub for technology, 
 ---
 
 ## Clickable Index
-- Vision & Mission
+- Vision 
+- Mission
 - Core Features
 - BYOD-Safe Access
 - RBAC Gamification
 - IoT Showcase & Compliance
 - Stakeholder Benefits
-- [Why This Matters- What This API Offers
+- Why This Matters- What This API Offers
 - Roadmap
 
-**Vision:** Create a ski-lodge-inspired tech and culture space blending VR entertainment, cybersecurity skill-building, and social engagement for youth and all demographics.
+## Vision: 
+Create a ski-lodge-inspired tech and culture space blending VR entertainment, cybersecurity skill-building, and social engagement for youth and all demographics.
 
-**Mission:** Provide a structured, inclusive, and interactive venue where young people gain digital literacy, leadership experience, and creative confidence—while enjoying immersive tech and cultural experiences.
+!Lounge
+ 
+## Mission: 
+Provide a structured, inclusive, and interactive venue where young people gain digital literacy, leadership experience, and creative confidence—while enjoying immersive tech and cultural experiences.
 
 ---
 
@@ -50,6 +55,8 @@ Roles earned through contribution, not restriction:
 Progression unlocks internships, leadership badges, and community prestige.
 
 ---
+
+!Lab
 
 ## IoT Showcase & Compliance
 Our IoT layer demonstrates best practices in security and privacy:
@@ -90,4 +97,4 @@ uvicorn techno_lodge_api:app --reload
 ---
 
 ## Roadmap
-See [ROADAP.md for development phases.
+See ROADAP.md for development phases.

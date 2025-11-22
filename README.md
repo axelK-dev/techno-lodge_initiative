@@ -5,23 +5,35 @@ Welcome to **Techno-Lodge**, a youth-driven, community-wide hub for technology, 
 ---
 
 ## Clickable Index
-- Vision 
-- Mission
-- Core Features
-- BYOD-Safe Access
-- RBAC Gamification
-- IoT Showcase & Compliance
-- Stakeholder Benefits
-- Why This Matters- What This API Offers
-- Roadmap
+- [Techno-Lodge: Where Creativity Meets Cyber Confidence](#techno-lodge-where-creativity-meets-cyber-confidence)
+  - [Clickable Index](#clickable-index)
+  - [Vision:](#vision)
+  - [Mission:](#mission)
+  - [Core Features](#core-features)
+  - [BYOD-Safe Access](#byod-safe-access)
+  - [RBAC Gamification](#rbac-gamification)
+  - [IoT Showcase \& Compliance](#iot-showcase--compliance)
+  - [Stakeholder Benefits](#stakeholder-benefits)
+  - [Why This Matters](#why-this-matters)
+    - [Cultural Design Disclaimer](#cultural-design-disclaimer)
+  - [What This API Offers](#what-this-api-offers)
+  - [Roadmap](#roadmap)
 
 ## Vision: 
 Create a ski-lodge-inspired tech and culture space blending VR entertainment, cybersecurity skill-building, and social engagement for youth and all demographics.
 
-![Lounge Concept](./images/lounge.png)
+![Lounge Concept](images/lounge.png)
  
 ## Mission: 
 Provide a structured, inclusive, and interactive venue where young people gain digital literacy, leadership experience, and creative confidence—while enjoying immersive tech and cultural experiences.
+
+“Techno-Lodge isn’t just a tech hub—it’s a platform for curiosity, civic engagement, and leadership development, built on secure and scalable technology.”
+
+“Cybersecurity and IoT aren’t the end goals—they’re the foundation that makes inclusive, safe, and future-facing community spaces possible.”
+
+“This concept is designed in gratitude with the hope of inspiring young people to explore technology while embracing civic principles.”
+
+“Every feature—from BYOD-safe access to RBAC gamification—was chosen to balance innovation with trust, privacy, and inclusivity.”
 
 ---
 
@@ -33,6 +45,8 @@ Provide a structured, inclusive, and interactive venue where young people gain d
 - **Music & Culture:** Live performances, art installations, and themed events.
 - **Food & Social Spaces:** Multiple vendors and community gathering areas.
 - **Family Inclusion:** Open to all ages for shared experiences and intergenerational learning.
+
+![Architecture](images/techno-lodge_architecture.png)
 
 ---
 
@@ -56,7 +70,7 @@ Progression unlocks internships, leadership badges, and community prestige.
 
 ---
 
-![Lab Concept](./images/lab.png)
+![Lab Concept](images/lab.png)
 
 ## IoT Showcase & Compliance
 Our IoT layer demonstrates best practices in security and privacy:
@@ -77,7 +91,21 @@ Our IoT layer demonstrates best practices in security and privacy:
 ---
 
 ## Why This Matters
-Employers increasingly seek professionals who combine technical expertise with adaptability, empathy, and resilience. Techno-Lodge creates a talent pipeline that meets industry needs while shaping individuals who contribute positively to society.
+Employers increasingly seek professionals who combine technical expertise with adaptability, empathy, and resilience. Techno-Lodge creates a talent pipeline that meets industry needs while shaping individuals who contribute positively to society.Techno-Lodge is more than a technical prototype—it’s a vision for community empowerment. By combining cybersecurity principles with inclusive design, we create a space where technology serves humanity:
+- Inspiring curiosity and civic engagement in young people.
+- Building pathways to industry readiness through internships and mentorship.
+- Revitalizing underutilized spaces for economic and social impact.
+
+### Cultural Design Disclaimer
+
+Any Indigenous art or cultural elements in this initiative will only be used with explicit permission from the relevant Tribes and artists. The current visuals are conceptual and do not include authentic tribal designs. Before incorporating cultural motifs in production assets or spaces, the project will:
+
+- Conduct government-to-government consultation with the appropriate Tribes.
+- Obtain Free, Prior, and Informed Consent (FPIC).
+- Commission Indigenous artists and cultural advisors for authentic representation.
+- Provide interpretive context for any cultural elements included.
+
+These steps ensure respect, authenticity, and alignment with cultural protocols.
 
 ---
 

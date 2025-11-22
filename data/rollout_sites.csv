@@ -1,0 +1,6 @@
+site_id,name,region,type,phase,lat,lon,modules
+1,Yakima Techno-Lodge,Yakima County,Rural Hub,Phase 1 – Tribal-first,46.6021,-120.5059,"Cultural, Education"
+2,Tulalip Techno-Lodge,Tulalip Reservation,Tribal Land,Phase 1 – Tribal-first,48.0640,-122.2516,"Cultural, Community"
+3,Spokane Techno-Lodge,Spokane County,Urban Hub,Phase 2 – Rural/Border,47.6588,-117.4260,"Education, Community"
+4,Albany Pilot Corner,Linn County (OR),Pilot,Pilot – Demo,44.6365,-123.1059,Education
+5,Colville Techno-Lodge,Colville Reservation,Tribal Land,Phase 1 – Tribal-first,48.5420,-118.5430,"Cultural, Education, Community"

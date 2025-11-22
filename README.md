@@ -18,7 +18,7 @@ Welcome to **Techno-Lodge**, a youth-driven, community-wide hub for technology, 
 ## Vision: 
 Create a ski-lodge-inspired tech and culture space blending VR entertainment, cybersecurity skill-building, and social engagement for youth and all demographics.
 
-!Lounge
+![Lounge Concept](/images/lounge.png)
  
 ## Mission: 
 Provide a structured, inclusive, and interactive venue where young people gain digital literacy, leadership experience, and creative confidence—while enjoying immersive tech and cultural experiences.
@@ -56,7 +56,7 @@ Progression unlocks internships, leadership badges, and community prestige.
 
 ---
 
-!Lab
+![Lab Concept](/images/lab.png)
 
 ## IoT Showcase & Compliance
 Our IoT layer demonstrates best practices in security and privacy:

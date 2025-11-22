@@ -91,7 +91,8 @@ Our IoT layer demonstrates best practices in security and privacy:
 ---
 
 ## Why This Matters
-Employers increasingly seek professionals who combine technical expertise with adaptability, empathy, and resilience. Techno-Lodge creates a talent pipeline that meets industry needs while shaping individuals who contribute positively to society.Techno-Lodge is more than a technical prototype—it’s a vision for community empowerment. By combining cybersecurity principles with inclusive design, we create a space where technology serves humanity:
+Employers increasingly seek professionals who combine technical expertise with adaptability, empathy, and resilience. Techno-Lodge creates a talent pipeline that meets industry needs while shaping individuals who contribute positively to society.
+Techno-Lodge is more than a technical prototype—it’s a vision for community empowerment. By combining cybersecurity principles with inclusive design, we create a space where technology serves humanity:
 - Inspiring curiosity and civic engagement in young people.
 - Building pathways to industry readiness through internships and mentorship.
 - Revitalizing underutilized spaces for economic and social impact.

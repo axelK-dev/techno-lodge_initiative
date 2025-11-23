@@ -1,0 +1,7 @@
+metric,value,target,unit,is_official,notes,citation_url,citation_date
+Digital Equity Capacity (WA) – Award,15.9,15.9,USD (Millions),true,"Official award amount for WA State Capacity Grant.","https://www.commerce.wa.gov/washington-state-digital-equity-plan-wins-approval-15-9-million-in-federal-funding/",2024-04-01
+BEAD – WA Allocation,1230,1230,USD (Millions),true,"Official WA BEAD allocation.","https://www.commerce.wa.gov/washington-broadband-office-to-host-monthly-meetings-on-1-2-billion-federal-funding-rollout/",2023-06-30
+TBCP – WA Tribal Awards,32,32,USD (Millions),true,"Five WA tribes split $32M in federal broadband grants.","https://www.cascadepbs.org/news/briefs/2024/12/five-wa-native-nations-split-32m-federal-broadband-grants/",2024-12-17
+Adoption (program completions – local),120,500,Participants,false,"Local demo KPI; replace with WA partner data.",,2025-11-22
+Cultural integrity (tribal-led events – local),18,80,Events,false,"Local demo KPI; replace with WA tribal reporting.",,2025-11-22
+ADA inclusion (features deployed – local),6,25,Features,false,"Local demo KPI; replace with WA facilities audit.",,2025-11-22

@@ -1,231 +1,141 @@
-# Techno-Lodge Dashboard (Washington) — stable minimal version
-# ------------------------------------------------------------
-# - Prefers real CSVs: data/real_sites.csv, data/real_kpis.csv, data/real_funding.csv
-# - Robust CSV parsing, no caching, no seeding.
-# - Clean header; interactivity kept simple; provenance at bottom on demand.
 
-import os
-from datetime import date
-import pandas as pd
 import streamlit as st
+import pandas as pd
 import plotly.express as px
+from datetime import date
+import os
 
-# ---------- App ----------
-st.set_page_config(page_title="Techno-Lodge Dashboard (WA)", layout="wide")
-st.title("Techno-Lodge: Washington Overview")
-st.caption("Explore sites, KPIs, and funding. Use filters to dig deeper. Provenance lives at the bottom.")
+st.set_page_config(page_title="Techno-Lodge Dashboard", layout="wide")
 
-# ---------- Paths ----------
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR, "data")
+DATA_DIR = "data"
+SITES_CSV = os.path.join(DATA_DIR, "rollout_sites.csv")
+METRICS_CSV = os.path.join(DATA_DIR, "metrics.csv")
+FUNDING_CSV = os.path.join(DATA_DIR, "funding.csv")
 
-REAL_SITES = os.path.join(DATA_DIR, "real_sites.csv")
-REAL_KPIS  = os.path.join(DATA_DIR, "real_kpis.csv")
-REAL_FUNDS = os.path.join(DATA_DIR, "real_funding.csv")
+def ensure_sample_data():
+    os.makedirs(DATA_DIR, exist_ok=True)
 
-SEED_SITES = os.path.join(DATA_DIR, "rollout_sites.csv")
-SEED_KPIS  = os.path.join(DATA_DIR, "metrics.csv")
-SEED_FUNDS = os.path.join(DATA_DIR, "funding.csv")
+    if not os.path.exists(SITES_CSV):
+        sites = pd.DataFrame([
+            {"site_id": 1, "name": "Yakima Techno-Lodge", "region": "Yakima County", "type": "Rural Hub",
+             "phase": "Phase 1 – Tribal-first", "lat": 46.6021, "lon": -120.5059, "modules": "Cultural, Education"},
+            {"site_id": 2, "name": "Tulalip Techno-Lodge", "region": "Tulalip Reservation", "type": "Tribal Land",
+             "phase": "Phase 1 – Tribal-first", "lat": 48.0640, "lon": -122.2516, "modules": "Cultural, Community"},
+            {"site_id": 3, "name": "Spokane Techno-Lodge", "region": "Spokane County", "type": "Urban Hub",
+             "phase": "Phase 2 – Rural/Border", "lat": 47.6588, "lon": -117.4260, "modules": "Education, Community"},
+            {"site_id": 4, "name": "Albany Pilot Corner", "region": "Linn County (OR)", "type": "Pilot",
+             "phase": "Pilot – Demo", "lat": 44.6365, "lon": -123.1059, "modules": "Education"},
+            {"site_id": 5, "name": "Colville Techno-Lodge", "region": "Colville Reservation", "type": "Tribal Land",
+             "phase": "Phase 1 – Tribal-first", "lat": 48.5420, "lon": -118.5430, "modules": "Cultural, Education, Community"},
+        ])
+        sites.to_csv(SITES_CSV, index=False)
 
-PROVENANCE_MD = os.path.join(DATA_DIR, "provenance.md")
+    if not os.path.exists(METRICS_CSV):
+        metrics = pd.DataFrame([
+            {"metric": "Access (Broadband ready sites)", "value": 3, "target": 10},
+            {"metric": "Adoption (program completions)", "value": 120, "target": 500},
+            {"metric": "Cultural integrity (tribal-led events)", "value": 18, "target": 80},
+            {"metric": "Inclusion (ADA features deployed)", "value": 6, "target": 25},
+        ])
+        metrics.to_csv(METRICS_CSV, index=False)
 
-def pick_path(real_path, seed_path):
-    if os.path.exists(real_path): return real_path
-    if seed_path and os.path.exists(seed_path): return seed_path
-    return None
+    if not os.path.exists(FUNDING_CSV):
+        funding = pd.DataFrame([
+            {"source": "TBCP (Federal)", "amount": 10400000, "status": "Secured"},
+            {"source": "BEAD (Federal)", "amount": 6500000, "status": "Pending"},
+            {"source": "Digital Equity Act (State)", "amount": 15900000, "status": "Allocated"},
+            {"source": "Private / Philanthropy", "amount": 1200000, "status": "In discussion"},
+        ])
+        funding.to_csv(FUNDING_CSV, index=False)
 
-def read_csv_safe(path):
-    """CSV reader that tolerates commas/quotes inside text fields."""
-    return pd.read_csv(
-        path,
-        engine="python",
-        quotechar='"',
-        escapechar='\\',
-        sep=',',
-        encoding="utf-8",
-        on_bad_lines="error",
-    )
+@st.cache_data
+def load_data():
+    ensure_sample_data()
+    sites = pd.read_csv(SITES_CSV)
+    mets = pd.read_csv(METRICS_CSV)
+    funds = pd.read_csv(FUNDING_CSV)
+    return sites, mets, funds
 
-# ---------- Load data ----------
-sites_path = pick_path(REAL_SITES, SEED_SITES)
-kpis_path  = pick_path(REAL_KPIS,  SEED_KPIS)
-funds_path = pick_path(REAL_FUNDS, SEED_FUNDS)
+st.title("Techno-Lodge: Safety, Engagement & Scalability")
+st.caption("Live prototype – Streamlit + Plotly + Pandas")
 
-if not all([sites_path, kpis_path, funds_path]):
-    st.error("Missing one or more required CSVs (real_sites.csv, real_kpis.csv, real_funding.csv).")
-    st.stop()
+sites, mets, funds = load_data()
 
-try:
-    sites = read_csv_safe(sites_path)
-    mets  = read_csv_safe(kpis_path)
-    funds = read_csv_safe(funds_path)
-except Exception as e:
-    st.error(f"CSV parsing error: {e}")
-    st.stop()
-
-# ---------- Normalize ----------
-# Strip whitespace in column names
-sites.columns = [c.strip() for c in sites.columns]
-mets.columns  = [c.strip() for c in mets.columns]
-funds.columns = [c.strip() for c in funds.columns]
-
-# Lat/Lon numeric
-for col in ("lat","lon"):
-    if col in sites.columns:
-        sites[col] = pd.to_numeric(sites[col], errors="coerce")
-
-# KPI numerics + provenance
-for col in ("value","target"):
-    if col in mets.columns:
-        mets[col] = pd.to_numeric(mets[col], errors="coerce")
-if "is_official" in mets.columns:
-    mets["provenance"] = mets["is_official"].map(lambda x: "Official" if str(x).lower()=="true" else "Modeled")
-else:
-    mets["provenance"] = "Demo"
-
-# Funding numeric + provenance
-if "amount_usd" in funds.columns:
-    funds["amount_usd"] = pd.to_numeric(funds["amount_usd"], errors="coerce")
-if "citation_url" in funds.columns:
-    funds["provenance"] = "Official"
-else:
-    funds["provenance"] = "Demo"
-
-# ---------- Helpers ----------
-def format_value(value, unit):
-    if pd.isna(value): return "—"
-    unit = (unit or "").strip()
-    if unit == "": return f"{value}"
-    if unit.lower().startswith("usd"):
-        if "mill" in unit.lower(): return f"${value}M"       # USD (Millions)
-        try: return f"${float(value):,.0f}"
-        except: return f"${value}"
-    return f"{value} {unit}"
-
-# ---------- Filters (sidebar) ----------
 with st.sidebar:
     st.header("Filters")
-    phases = sorted(sites["phase"].dropna().unique().tolist()) if "phase" in sites.columns else []
-    types  = sorted(sites["type"].dropna().unique().tolist()) if "type" in sites.columns else []
-    sel_phase = st.multiselect("Phase", options=phases, default=phases)
-    sel_type  = st.multiselect("Site type", options=types, default=types)
-    module_q  = st.text_input("Module contains", "")
+    phase_sel = st.multiselect("Phase", options=sorted(sites['phase'].unique()), default=sorted(sites['phase'].unique()))
+    type_sel = st.multiselect("Site type", options=sorted(sites['type'].unique()), default=sorted(sites['type'].unique()))
+    module_search = st.text_input("Module contains", "")
+    st.divider()
+    st.subheader("About")
+    st.write("If no CSVs are present, this app auto-creates sample data under ./data.")
 
-# ---------- Map ----------
-st.subheader("Rollout Map (Washington)")
-map_df = sites.copy()
-if sel_phase: map_df = map_df[map_df["phase"].isin(sel_phase)]
-if sel_type:  map_df = map_df[map_df["type"].isin(sel_type)]
-if module_q and "modules" in map_df.columns:
-    map_df = map_df[map_df["modules"].astype(str).str.contains(module_q, case=False, na=False)]
+filtered = sites[sites['phase'].isin(phase_sel) & sites['type'].isin(type_sel)]
+if module_search:
+    filtered = filtered[filtered['modules'].str.contains(module_search, case=False, na=False)]
 
-if {"lat","lon"}.issubset(map_df.columns) and not map_df.dropna(subset=["lat","lon"]).empty:
+col1, col2 = st.columns([2, 1])
+with col1:
+    st.subheader("Rollout Map")
     fig = px.scatter_mapbox(
-        map_df.dropna(subset=["lat","lon"]),
-        lat="lat", lon="lon",
-        hover_name="name" if "name" in map_df.columns else None,
-        hover_data=[c for c in ["region","type","phase","modules","citation_url"] if c in map_df.columns],
-        color="type" if "type" in map_df.columns else None,
-        zoom=5, height=520
+        filtered,
+        lat='lat', lon='lon',
+        hover_name='name', hover_data=['region', 'type', 'phase', 'modules'],
+        color='type', zoom=5, height=520
     )
-    fig.update_layout(mapbox_style="open-street-map", margin=dict(l=0, r=0, t=0, b=0))
+    fig.update_layout(mapbox_style='open-street-map', margin=dict(l=0, r=0, t=0, b=0))
     st.plotly_chart(fig, use_container_width=True)
-else:
-    st.info("No map points to display with current filters.")
 
-# Optional sites table
-if st.checkbox("Show sites table", value=False):
-    st.dataframe(map_df, use_container_width=True)
-    st.download_button("Download sites (filtered)", data=map_df.to_csv(index=False), file_name="sites_filtered.csv", mime="text/csv")
+with col2:
+    st.subheader("Key KPIs")
+    kpi_cols = st.columns(2)
+    for i, row in mets.iterrows():
+        with kpi_cols[i % 2]:
+            pct = row['value'] / max(row['target'], 1)
+            st.metric(label=row['metric'], value=int(row['value']), delta=f"{pct*100:.1f}% of target")
 
-# ---------- KPIs ----------
-st.subheader("Key KPIs")
-kpi_df = mets.copy()
-if "provenance" in kpi_df.columns:
-    show_official = st.checkbox("Show official KPIs only", value=True)
-    if show_official: kpi_df = kpi_df[kpi_df["provenance"]=="Official"]
+st.divider()
 
-cols = st.columns(2)
-for i, row in kpi_df.iterrows():
-    label = f"{row.get('metric','Metric')} ({row.get('provenance','Demo')})"
-    value = row.get("value", None)
-    target= row.get("target", None)
-    unit  = row.get("unit","")
-    if pd.isna(value) or pd.isna(target): continue
-    pct   = (value / target) if (target and target != 0) else None
-    val_d = format_value(value, unit)
-    with cols[i % 2]:
-        st.metric(label=label, value=val_d, delta=f"{pct*100:.1f}% of target" if pct else "—")
-
-if st.checkbox("Show KPI table", value=False):
-    st.dataframe(kpi_df, use_container_width=True)
-    st.download_button("Download KPIs (filtered)", data=kpi_df.to_csv(index=False), file_name="kpis_filtered.csv", mime="text/csv")
-
-# ---------- Funding ----------
 st.subheader("Funding Overview")
-fund_df = funds.copy()
+fund_cols = st.columns([1.5, 1])
+with fund_cols[0]:
+    fund_bar = px.bar(funds, x='source', y='amount', color='status', text='status',
+                      labels={'amount': 'Amount (USD)'}, height=380)
+    fund_bar.update_traces(textposition='outside')
+    st.plotly_chart(fund_bar, use_container_width=True)
 
-# Simple toggles
-include_national = st.checkbox("Include national rows (United States)", value=False)
-if not include_national:
-    fund_df = fund_df[fund_df.get("region","")!="United States"]
+with fund_cols[1]:
+    total = int(funds['amount'].sum())
+    st.metric("Total identified", f"${total:,.0f}")
+    st.write(funds)
 
-include_progsize = st.checkbox("Include 'Program Size' rows (e.g., TBCP total)", value=True)
-if not include_progsize:
-    fund_df = fund_df[fund_df.get("status","")!="Program Size"]
-
-search = st.text_input("Search funding (source or program)", "")
-if search:
-    s = search.lower()
-    fund_df = fund_df[
-        fund_df.get("source","").str.lower().str.contains(s, na=False) |
-        fund_df.get("program","").str.lower().str.contains(s, na=False)
-    ]
-
-# Render chart
-if "amount_usd" in fund_df.columns and not fund_df.empty:
-    fig = px.bar(
-        fund_df,
-        x="source",
-        y="amount_usd",
-        color="status" if "status" in fund_df.columns else None,
-        text="status" if "status" in fund_df.columns else None,
-        labels={"amount_usd":"Amount (USD)"},
-        height=420
-    )
-    fig.update_traces(textposition="outside")
-    fig.update_layout(margin=dict(l=0, r=0, t=10, b=0))
-    st.plotly_chart(fig, use_container_width=True)
-
-    total = pd.to_numeric(fund_df["amount_usd"], errors="coerce").fillna(0).sum()
-    st.metric("Total (sum of displayed rows)", f"${int(total):,}")
-else:
-    st.info("No funding rows to display with current filters.")
-
-if st.checkbox("Show funding table", value=False):
-    show_cols = [c for c in ["source","program","amount_usd","status","region","provenance","citation_url"] if c in fund_df.columns]
-    st.dataframe(fund_df[show_cols], use_container_width=True)
-    st.download_button("Download funding (filtered)", data=fund_df.to_csv(index=False), file_name="funding_filtered.csv", mime="text/csv")
-
-# ---------- Timeline (optional visual cue) ----------
 st.subheader("Rollout Timeline")
-phases_data = [
-    {"Task": "Phase 1 – Tribal-first pilots",   "Start": date(2025, 1, 1), "Finish": date(2025, 6, 30)},
-    {"Task": "Phase 2 – Rural/Border expansion","Start": date(2025, 7, 1), "Finish": date(2026, 3, 31)},
-    {"Task": "Phase 3 – Urban hubs",            "Start": date(2026, 4, 1), "Finish": date(2026, 12, 31)},
+phases = [
+    {"Task": "Phase 1 – Tribal-first pilots", "Start": date(2025, 1, 1), "Finish": date(2025, 6, 30)},
+    {"Task": "Phase 2 – Rural/Border expansion", "Start": date(2025, 7, 1), "Finish": date(2026, 3, 31)},
+    {"Task": "Phase 3 – Urban hubs", "Start": date(2026, 4, 1), "Finish": date(2026, 12, 31)},
 ]
-ph_df = pd.DataFrame(phases_data)
-fig_t = px.timeline(ph_df, x_start="Start", x_end="Finish", y="Task", height=280)
+phase_df = pd.DataFrame(phases)
+fig_t = px.timeline(phase_df, x_start="Start", x_end="Finish", y="Task", height=260)
 fig_t.update_yaxes(autorange="reversed")
 fig_t.update_layout(margin=dict(l=0, r=0, t=0, b=0))
 st.plotly_chart(fig_t, use_container_width=True)
 
-# ---------- Data & Provenance (bottom) ----------
-with st.expander("Data & Provenance (click to open)"):
-    st.markdown(f"- **Sites CSV**: `{sites_path}`")
-    st.markdown(f"- **KPIs  CSV**: `{kpis_path}`")
-    st.markdown(f"- **Funding CSV**: `{funds_path}`")
-    if os.path.exists(PROVENANCE_MD):
-        st.markdown("---")
-        st.markdown("**provenance.md**")
-        st.markdown(open(PROVENANCE_MD, "r", encoding="utf-8").read())
+st.subheader("Compliance check – demo")
+st.caption("Simulates a COPPA/FERPA/CIPA/HIPAA-inspired checklist; no data is stored.")
+with st.form("compliance_form"):
+    age = st.number_input("User age", min_value=5, max_value=99, value=15)
+    coppa = st.checkbox("COPPA: Parental consent for under 13")
+    ferpa = st.checkbox("FERPA: Limit access to education records")
+    cipa = st.checkbox("CIPA: Content filtering & safety policies")
+    hipaa = st.checkbox("HIPAA-inspired: Encrypt telemetry & consent analytics")
+    submitted = st.form_submit_button("Validate")
+    if submitted:
+        passed, failed = True, []
+        if age < 13 and not coppa: failed.append("COPPA"); passed = False
+        if not ferpa: failed.append("FERPA"); passed = False
+        if not cipa: failed.append("CIPA"); passed = False
+        if not hipaa: failed.append("HIPAA-inspired"); passed = False
+        st.success("Compliance passed – proceed to onboarding ✨") if passed else st.error(f"Compliance failed: {', '.join(failed)}")
+
+st.caption("You can later replace the CSVs or connect this to your FastAPI (`/health`, `/login`, `/onboard`).")
